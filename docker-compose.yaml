@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  # PostgreSQL база даних
+  postgres:
+    image: postgres:15
+    container_name: postgres_hw02
+    environment:
+      POSTGRES_DB: hw02
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 567234
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app_network
+
+  # FastAPI застосунок
+  web:
+    build: .
+    container_name: fastapi_hw02
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+    networks:
+      - app_network
+    environment:
+      - PORT=8000
+
+# Створення мережі
+networks:
+  app_network:
+    driver: bridge
+
+# Створення постійного сховища для бази даних
+volumes:
+  postgres_data:
